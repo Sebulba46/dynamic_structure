@@ -1,66 +1,140 @@
 #include <iostream>
-
-struct Boo {
-    int x;
-};
+#include <cstdlib>
 
 using namespace std;
 
-int main() {
+template<typename T>
+struct Node
+{
+    T x;
+    Node *Next;
+};
 
-    int size;
+template<typename T>
+class List
+{
+    Node<T> *Head = nullptr;
+    Node<T> *Tail = nullptr;
+public:
+        List() = default;
+        ~List();
+        void Add(T x);
+        void Show();
+        void del();
+        void find(T s);
+        void find_ind(int index);
 
-    cout << "Enter size of Boo:";
-    cin >> size;
+};
 
-    Boo* pointer = nullptr;
+template<typename T>
+List<T>::~List()
+{
+    Node<T> *temp = Head;
+    while (temp != nullptr)
 
-    pointer = new Boo[size];
+    {
+        temp = Head -> Next;
 
-    for (int i = 0; i < size; i++) {
-        cout << "Enter next value:";
-        cin >> pointer[i].x;
+        delete Head;
+
+        Head = temp;
+
     }
+}
 
 
-    for (int i = 0; i < size; i++)
-        cout << pointer[i].x << endl;
 
-    int el_del;
-    cout << "Enter element to delete:";
-    cin >> el_del;
+template<typename T>
+void List<T>::Add(T x)
+{
+    auto *temp = new Node<T>;
+    temp->x = x;
+    temp->Next = nullptr;
 
-    for (int i = 0 ; i < 5 ; i++) {
-        if (pointer[i].x == el_del) // check for equality
-        {
-            for (int j = i; j + 1 < el_del; j++)  //shift over elements in new array
-            {
-                pointer[j] = pointer[j+1];
-            }
+    if (Head != nullptr)
+    {
+        Tail->Next = temp;
+        Tail = temp;
+    }     else Head = Tail = temp;
+}
+
+template<typename T>
+void List<T>::Show()
+{
+    Node<T> *temp = Head;
+    while (temp != nullptr)
+    {
+        cout << temp->x << " ";
+        temp = temp->Next;
+    }
+    cout << endl;
+}
+
+template<typename T>
+void List<T>::find(T s)
+{
+    Node<T> *temp = Head;
+    int count = 0;
+    while (temp != nullptr)
+    {
+        if (temp->x == s) {
+            cout << "Element " << temp->x << " has index: " << count << endl;
         }
+        count ++;
+        temp = temp->Next;
     }
+}
 
-    for (int i = 0; i < size - 1; i++)
-        cout << pointer[i].x << endl;
-
-    int elem_find;
-    cout << "Enter element you want to find";
-    cin >> elem_find;
-
-    for (int i = 0 ; i < 5 ; i++) {
-        if (pointer[i].x == elem_find) // check for equality
-        {
-            cout << "Element Boo[" << i << "] = " << elem_find << endl;
+template<typename T>
+void List<T>::find_ind(int index)
+{
+    Node<T> *temp = Head;
+    int count = 0;
+    while (temp != nullptr)
+    {
+        if (count == index) {
+            cout << "Element List[" << index << "] = " << temp->x << endl;
         }
+        count ++;
+        temp = temp->Next;
     }
+}
 
-    int index_find;
-    cout << "Enter index you want to find";
-    cin >> index_find;
-    cout << "Element Boo[" << index_find << "] = " << pointer[index_find].x << endl;
+template<typename T>
+void List<T>::del()
+{
+    if (Head != nullptr)
+    {
+        Node<T> *temp = Head;
+        cout << "Elem " << Head->x << " del" << endl;
+        Head = Head->Next;
+        delete temp;
+    }
+}
 
-    delete[] pointer;
 
-    cin.ignore();
-    cin.get();
+
+int main()
+{
+    List<int> lst;
+    system("CLS");
+    lst.Add(100);
+    lst.Add(200);
+    lst.Add(300);
+    lst.Show();
+    lst.del();
+    cout << endl;
+
+    lst.find(200);
+    lst.find_ind(1);
+
+    lst.Add(111);
+    lst.Add(222);
+    lst.Show();
+    cout << endl;
+
+    lst.Show();
+
+    system("PAUSE");
+    return 0;
 }
